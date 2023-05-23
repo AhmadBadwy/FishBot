@@ -1,3 +1,4 @@
+// ignore: file_names
 class Sensor {
   final int id, valu;
   final String title, image, unit;

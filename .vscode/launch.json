@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "fkera_app",
+            "name": "Gradproj",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "fkera_app (profile mode)",
+            "name": "Gradproj (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "fkera_app (release mode)",
+            "name": "Gradproj (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

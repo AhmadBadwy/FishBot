@@ -1,6 +1,11 @@
-import 'package:fkera_app/fish_screen.dart';
-import 'package:fkera_app/pages.dart';
-import 'package:fkera_app/settings.dart';
+import 'dart:math';
+import 'package:FISHBOT/fish_screen.dart';
+import 'package:FISHBOT/ph_page.dart';
+import 'package:FISHBOT/settings.dart';
+import 'package:FISHBOT/temp_page.dart';
+import 'package:FISHBOT/saved.dart';
+import 'package:FISHBOT/turb_page.dart';
+import 'package:FISHBOT/waterlevel_page.dart';
 import 'package:flutter/material.dart';
 import 'constant.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -18,7 +23,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final _pageOptions = [
     const FishScreen(),
     const HomePage(),
-    const Settings(),
+    const Saved(),
+    const settings(),
   ];
   onTapped(int selectedIndex) {
     setState(() {
@@ -40,8 +46,12 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: kPrimaryColor,
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
-        elevation: 0,
-        title: const Text('Welcome'),
+        elevation: 0.5,
+        title: const Text(
+          'FISHBOT',
+          style: TextStyle(
+              color: kDefaultIconDarkColor, fontWeight: FontWeight.w300),
+        ),
       ),
       body: PageView(
         controller: initialPageController,
@@ -58,13 +68,15 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: (index) {
           onTapped(index);
         },
+        backgroundColor: kPrimaryColor,
+        selectedItemColor: kBackgroundColor,
+        unselectedItemColor: kTextLightColor,
         currentIndex: currentPageIndex,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.fish), label: 'Fish'),
+              icon: Icon(FontAwesomeIcons.list), label: 'Fish'),
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: 'Settings'),
+          BottomNavigationBarItem(icon: Icon(Icons.save), label: 'saved'),
         ],
       ),
     );
@@ -78,219 +90,295 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.center,
-      child: Column(
-        children: [
-          const SizedBox(
-            height: kDefaultPadding,
-          ),
-          Expanded(
-            child: Stack(
-              children: [
-                // first one for temp
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AnotherPage(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width - 30,
-                    decoration: const BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                            offset: Offset(0, 15),
-                            blurRadius: 15,
-                            color: kTextColor),
-                      ],
-                      color: kBackgroundColor,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(40),
-                      ),
+    return Scaffold(
+      backgroundColor: kPrimaryColor,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(
+              height: kDefaultPadding,
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Temppage(title: 'Flutter Demo'),
+                  ),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 170,
+                  decoration: const BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                          offset: Offset(0, 15),
+                          blurRadius: 15,
+                          color: kTextColor),
+                    ],
+                    color: kBackgroundColor,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(40),
                     ),
                   ),
-                ),
-                // positioned for image
-                Positioned(
-                  right: 0,
-                  bottom: 50,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                    height: 100,
-                    width: 150,
-                    child: Image.asset(
-                      'images/temp.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                // positioned for text
-                Positioned(
-                  top: 30,
-                  left: 0,
-                  child: SizedBox(
-                      height: 130,
-                      child: SizedBox(
-                        height: 130,
-                        child: Column(
-                          children: const [
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: kDefaultPadding),
-                              child: Text(
-                                'Temperature',
-                                style: TextStyle(
-                                    fontSize: 25, color: Colors.black),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // positioned for text
+                      const SizedBox(
+                        height: 50,
+                        child: SizedBox(
+                          height: 50,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: kDefaultPadding),
+                                child: Text(
+                                  'Temperature',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 25,
+                                      color: Colors.black),
+                                ),
                               ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // positioned for image
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: kDefaultPadding,
+                        ),
+                        height: 100,
+                        width: 150,
+                        child: Image.asset(
+                          'images/temp.png',
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: kDefaultPadding,
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Phpage(),
+                  ),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 170,
+                  decoration: const BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                          offset: Offset(0, 15),
+                          blurRadius: 15,
+                          color: kTextColor),
+                    ],
+                    color: kBackgroundColor,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(40),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // positioned for text
+                      const SizedBox(
+                          height: 50,
+                          child: SizedBox(
+                            height: 50,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: kDefaultPadding),
+                                  child: Text(
+                                    'PH',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 25,
+                                        color: Colors.black),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          )),
+                      // positioned for image
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: kDefaultPadding),
+                        height: 100,
+                        width: 150,
+                        child: Image.asset(
+                          'images/phh.png',
+                          fit: BoxFit.fitWidth,
                         ),
-                      )),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: kDefaultPadding,
-          ),
-          Expanded(
-            child: Stack(
-              children: [
-                // 2nd for ph
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AnotherPage(),
                       ),
-                    );
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width - 30,
-                    decoration: const BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                              offset: Offset(0, 15),
-                              blurRadius: 15,
-                              color: kTextColor),
-                        ],
-                        color: kBackgroundColor,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(40),
-                        )),
+                    ],
                   ),
                 ),
-                // positined for image
-                Positioned(
-                  right: 0,
-                  bottom: 50,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                    height: 100,
-                    width: 150,
-                    child: Image.asset('images/phh.png'),
+              ),
+            ),
+            const SizedBox(
+              height: kDefaultPadding,
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Turbpage(),
                   ),
-                ),
-                // positioned for text
-                Positioned(
-                  top: 30,
-                  left: 0,
-                  child: SizedBox(
-                    height: 130,
-                    child: Column(
-                      children: const [
-                        Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                          child: Text(
-                            'PH',
-                            style: TextStyle(fontSize: 25, color: Colors.black),
-                          ),
-                        ),
-                      ],
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 170,
+                  decoration: const BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                          offset: Offset(0, 15),
+                          blurRadius: 15,
+                          color: kTextColor),
+                    ],
+                    color: kBackgroundColor,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(40),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: kDefaultPadding,
-          ),
-          Expanded(
-            child: Stack(
-              children: [
-                //3rd for turb
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AnotherPage(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width - 30,
-                    decoration: const BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                              offset: Offset(0, 15),
-                              blurRadius: 15,
-                              color: kTextColor),
-                        ],
-                        color: kBackgroundColor,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(40),
-                        )),
-                  ),
-                ),
-                // positioned for image
-                Positioned(
-                  right: 0,
-                  bottom: 50,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                    height: 100,
-                    width: 150,
-                    child: Image.asset('images/trub.png'),
-                  ),
-                ),
-                // positioned for text
-                Positioned(
-                  top: 30,
-                  left: 0,
-                  child: SizedBox(
-                    height: 130,
-                    child: Column(
-                      children: const [
-                        Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                          child: Text(
-                            'Turbidity',
-                            style: TextStyle(fontSize: 25, color: Colors.black),
-                          ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // positioned for text
+                      const SizedBox(
+                          height: 50,
+                          child: SizedBox(
+                            height: 50,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: kDefaultPadding),
+                                  child: Text(
+                                    'Turbidity',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 25,
+                                        color: Colors.black),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )),
+                      // positioned for image
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: kDefaultPadding),
+                        height: 100,
+                        width: 150,
+                        child: Image.asset(
+                          'images/turb.png',
+                          fit: BoxFit.fitWidth,
                         ),
-                      ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: kDefaultPadding,
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Waterlevelpage(),
+                  ),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 170,
+                  decoration: const BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                          offset: Offset(0, 15),
+                          blurRadius: 15,
+                          color: kTextColor),
+                    ],
+                    color: kBackgroundColor,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(40),
                     ),
                   ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // positioned for text
+                      const SizedBox(
+                          height: 50,
+                          child: SizedBox(
+                            height: 50,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: kDefaultPadding),
+                                  child: Text(
+                                    'Water level',
+                                    style: TextStyle(
+                                        fontSize: 25,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )),
+                      // positioned for image
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: kDefaultPadding),
+                        height: 100,
+                        width: 150,
+                        child: Image.asset(
+                          'images/liqued-level.png',
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             ),
-          ),
-          const SizedBox(
-            height: kDefaultPadding,
-          ),
-        ],
+            const SizedBox(
+              height: kDefaultPadding,
+            )
+          ],
+        ),
       ),
     );
   }

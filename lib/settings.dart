@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class Settings extends StatelessWidget {
-  const Settings({super.key});
+class settings extends StatelessWidget {
+  const settings({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return const Placeholder();
   }
 }

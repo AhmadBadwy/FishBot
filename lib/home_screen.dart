@@ -1,4 +1,12 @@
+import 'dart:ffi';
 import 'dart:math';
+import 'dart:io';
+
+import 'package:FISHBOT/MQTTClientManager.dart';
+
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
+
 import 'package:FISHBOT/fish_screen.dart';
 import 'package:FISHBOT/ph_page.dart';
 import 'package:FISHBOT/settings.dart';
@@ -18,6 +26,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  MQTTClientManager mqttClientManager = MQTTClientManager();
+  final String temp_topic = "fishbot/temp";
+  final String pH_topic = "fishbot/pH";
+  final String turbidity_topic = "fishbot/turbidity";
+  final String water_level_topic = "fishbot/water_level";
+
+  var temp = 0.0;
+  var pH = 0.0;
+  var turbidity = 0.0;
+  var water_level = 0.0;
+
   int currentPageIndex = 1;
   PageController initialPageController = PageController();
   final _pageOptions = [
@@ -36,6 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    setupMqttClient();
+    setupUpdatesListener();
     super.initState();
     initialPageController = PageController(initialPage: 1);
   }
@@ -80,6 +101,54 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> setupMqttClient() async {
+    await mqttClientManager.connect();
+    mqttClientManager.subscribe(temp_topic);
+    mqttClientManager.subscribe(pH_topic);
+    mqttClientManager.subscribe(turbidity_topic);
+    mqttClientManager.subscribe(water_level_topic);
+  }
+
+  Future printIps() async {
+    for (var interface in await NetworkInterface.list()) {
+      print('== Interface: ${interface.name} ==');
+      for (var addr in interface.addresses) {
+        print(
+            '${addr.address} ${addr.host} ${addr.isLoopback} ${addr.rawAddress} ${addr.type.name}');
+      }
+    }
+  }
+
+  void setupUpdatesListener() {
+    mqttClientManager
+        .getMessagesStream()!
+        .listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+      final recMess = c![0].payload as MqttPublishMessage;
+      final topic = c[0].topic;
+      final pt =
+          MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+      if (topic == "fishbot/temp") {
+        temp = double.parse(pt);
+      }
+      if (topic == "fishbot/pH") {
+        pH = double.parse(pt);
+      }
+      if (topic == "fishbot/turbidity") {
+        turbidity = double.parse(pt);
+      }
+      if (topic == "fishbot/water_level") {
+        water_level = double.parse(pt);
+      }
+      print('MQTTClient::Message received on topic: <${c[0].topic}> is $pt\n');
+    });
+  }
+
+  @override
+  void dispose() {
+    mqttClientManager.disconnect();
+    super.dispose();
   }
 }
 

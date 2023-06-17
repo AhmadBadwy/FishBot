@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter_native_splash: ^2.3.0
   syncfusion_flutter_charts: ^19.2.47
+  font_awesome_flutter: ^10.4.0
 
 
 
@@ -55,7 +56,7 @@ flutter_native_splash:
 
 
 dev_dependencies:
-  font_awesome_flutter: ^10.4.0
+  
 
   flutter_test:
     sdk: flutter

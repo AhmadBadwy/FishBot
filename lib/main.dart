@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
+import 'screen/home_screen.dart';
 
 // the main function is the starting point for all fluuter apps
 

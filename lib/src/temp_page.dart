@@ -1,5 +1,8 @@
-import 'package:FISHBOT/constant.dart';
 import 'package:flutter/material.dart';
+
+import 'package:FISHBOT/MQTTClientManager.dart';
+
+import 'package:mqtt_client/mqtt_client.dart';
 
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'dart:async';
@@ -17,7 +20,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // This is the theme of your application.
+        // This is the theme of your
+        // application.
         //
         // Try running your application with "flutter run". You'll see the
         // application has a blue toolbar. Then, without quitting the app, try
@@ -54,11 +58,38 @@ class _TemppageState extends State<Temppage> {
   late List<LiveData> chartData;
   late ChartSeriesController _chartSeriesController;
 
+  MQTTClientManager mqttClientManager = MQTTClientManager("dd");
+
+  final String temp_topic = "fishbot/temp";
+  var temp = 0.0;
+
   @override
   void initState() {
+    setupMqttClient();
+    setupUpdatesListener();
     chartData = getChartData();
     Timer.periodic(const Duration(seconds: 1), updateDataSource);
     super.initState();
+  }
+
+  Future<void> setupMqttClient() async {
+    await mqttClientManager.connect();
+    mqttClientManager.subscribe(temp_topic);
+  }
+
+  void setupUpdatesListener() {
+    mqttClientManager
+        .getMessagesStream()!
+        .listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+      final recMess = c![0].payload as MqttPublishMessage;
+      final topic = c[0].topic;
+      final pt =
+          MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+      if (topic == "fishbot/temp") {
+        temp = double.parse(pt);
+      }
+      print('MQTTClient::Message received on topic: <${c[0].topic}> is $pt\n');
+    });
   }
 
   @override
@@ -118,6 +149,12 @@ class _TemppageState extends State<Temppage> {
       LiveData(17, 72),
       LiveData(18, 94)
     ];
+  }
+
+  @override
+  void dispose() {
+    mqttClientManager.disconnect();
+    super.dispose();
   }
 }
 

@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:ffi';
 import 'dart:math';
 import 'dart:io';
@@ -119,9 +121,9 @@ class _HomePageState extends State<HomePage> {
   final String water_level_low_topic = "fishbot/water_level_low";
   final String water_level_high_topic = "fishbot/water_level_high";
 
-  int temp = 0;
-  int pH = 0;
-  int turbidity = 0;
+  double temp = 0;
+  double pH = 0;
+  double turbidity = 0;
   bool water_level_high = false;
   bool water_level_low = false;
   String Water_level = "";
@@ -134,9 +136,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> setupMqttClient() async {
-    print("jdifgsdkjgkfsgd");
     try {
       await mqttClientManager.connect();
+      mqttClientManager.subscribe(temp_topic);
+      mqttClientManager.subscribe(pH_topic);
+      mqttClientManager.subscribe(turbidity_topic);
+      mqttClientManager.subscribe(water_level_low_topic);
+      mqttClientManager.subscribe(water_level_high_topic);
     } catch (e) {
       print("no connection");
     }
@@ -146,24 +152,24 @@ class _HomePageState extends State<HomePage> {
     mqttClientManager
         .getMessagesStream()!
         .listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+      print("hello");
       final recMess = c![0].payload as MqttPublishMessage;
       final topic = c[0].topic;
-      print("${topic}");
       final pt =
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
       if (topic == "fishbot/temp") {
         setState(() {
-          temp = int.parse(pt);
+          temp = double.parse(pt);
         });
       }
       if (topic == "fishbot/pH") {
         setState(() {
-          pH = int.parse(pt);
+          pH = double.parse(pt);
         });
       }
       if (topic == "fishbot/turbidity") {
         setState(() {
-          turbidity = int.parse(pt);
+          turbidity = double.parse(pt);
         });
       }
       if (topic == water_level_low_topic) {

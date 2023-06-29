@@ -96,7 +96,7 @@ class _FishScreenState extends State<FishScreen> {
                   onPressed: () {
                     setState(
                       () {
-                        feedToggle = !feedToggle!;
+                        feedToggle = !feedToggle;
                         if (feedToggle) {
                           mqttClientManager.publishMessage(motor_topic, "on");
                         } else {

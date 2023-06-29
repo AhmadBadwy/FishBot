@@ -1,3 +1,4 @@
+import 'package:FISHBOT/constant.dart';
 import 'package:flutter/material.dart';
 
 import 'package:FISHBOT/MQTTClientManager.dart';
@@ -16,21 +17,40 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        // This is the theme of your
-        // application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+    return Scaffold(
+      backgroundColor: kgray,
+      appBar: AppBar(
+        backgroundColor: kgray,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back_ios_new),
+        ),
+        title: const Text(
+          "Back",
+          style: TextStyle(fontSize: 20),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: MaterialApp(
+          title: 'Flutter Demo',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            // This is the theme of your
+            // application.
+            //
+            // Try running your application with "flutter run". You'll see the
+            // application has a blue toolbar. Then, without quitting the app, try
+            // changing the primarySwatch below to Colors.green and then invoke
+            // "hot reload" (press "r" in the console where you ran "flutter run",
+            // or simply save your changes to "hot reload" in a Flutter IDE).
+            // Notice that the counter didn't reset back to zero; the application
+            // is not restarted.
+            primarySwatch: Colors.blue,
+          ),
+        ),
       ),
     );
   }
@@ -58,7 +78,7 @@ class _TemppageState extends State<Temppage> {
   late List<LiveData> chartData;
   late ChartSeriesController _chartSeriesController;
 
-  MQTTClientManager mqttClientManager = MQTTClientManager("dd");
+  MQTTClientManager mqttClientManager = MQTTClientManager("");
 
   final String temp_topic = "fishbot/temp";
   var temp = 0.0;
@@ -129,7 +149,7 @@ class _TemppageState extends State<Temppage> {
 
   List<LiveData> getChartData() {
     return <LiveData>[
-      LiveData(0, 42),
+      LiveData(1, 42),
       LiveData(1, 47),
       LiveData(2, 43),
       LiveData(3, 49),

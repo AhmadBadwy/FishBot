@@ -31,6 +31,7 @@ dependencies:
   flutter_native_splash: ^2.3.0
   syncfusion_flutter_charts: ^19.2.47
   font_awesome_flutter: ^10.4.0
+  fl_chart: ^0.63.0
 
 
 

@@ -170,6 +170,11 @@ class _HomePageState extends State<HomePage> {
       if (topic == "fishbot/turbidity") {
         setState(() {
           turbidity = double.parse(pt);
+          // if (turbidity < 0) {
+          //   turbidity = 0.0;
+          // } else {
+          //   turbidity = turbidity;
+          // }
         });
       }
       if (topic == water_level_low_topic) {
@@ -239,7 +244,7 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.only(left: 10.0, right: 10),
                 child: Container(
                   width: MediaQuery.of(context).size.width,
-                  height: 130,
+                  height: 120,
                   decoration: const BoxDecoration(
                     boxShadow: [
                       BoxShadow(
@@ -259,7 +264,7 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(
                         height: 50,
                         child: SizedBox(
-                          height: 50,
+                          height: 40,
                           child: Column(
                             children: [
                               Padding(
@@ -275,9 +280,23 @@ class _HomePageState extends State<HomePage> {
                                           color: Colors.black),
                                     ),
                                     Text(
-                                      "${temp}",
-                                      style: TextStyle(fontSize: 20),
+                                      "${temp} °C",
+                                      style: TextStyle(fontSize: 17),
                                     ),
+                                    if (temp > 30)
+                                      Text(
+                                        "High ",
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: const Color.fromARGB(
+                                                255, 147, 10, 0)),
+                                      ),
+                                    if (temp < 20)
+                                      Text("low",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: const Color.fromARGB(
+                                                  255, 183, 13, 1))),
                                   ],
                                 ),
                               ),
@@ -292,7 +311,7 @@ class _HomePageState extends State<HomePage> {
                           horizontal: kDefaultPadding,
                         ),
                         height: 100,
-                        width: 150,
+                        width: 120,
                         child: Image.asset(
                           'images/temp.png',
                           fit: BoxFit.fitWidth,
@@ -311,7 +330,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const Phpage(),
+                    builder: (context) => phpage(title: 'f'),
                   ),
                 );
               },
@@ -356,8 +375,20 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       Text(
                                         "${pH}",
-                                        style: TextStyle(fontSize: 20),
+                                        style: TextStyle(fontSize: 17),
                                       ),
+                                      if (pH > 9)
+                                        Text("High",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: const Color.fromARGB(
+                                                    255, 183, 13, 1))),
+                                      if (pH < 6)
+                                        Text("low",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: const Color.fromARGB(
+                                                    255, 183, 13, 1)))
                                     ],
                                   ),
                                 ),
@@ -369,9 +400,9 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: kDefaultPadding),
                         height: 100,
-                        width: 150,
+                        width: 120,
                         child: Image.asset(
-                          'images/phh.png',
+                          'images/ph.png',
                           fit: BoxFit.fitWidth,
                         ),
                       ),
@@ -424,7 +455,7 @@ class _HomePageState extends State<HomePage> {
                                       horizontal: 40),
                                   child: Column(
                                     children: [
-                                      const Text(
+                                      Text(
                                         "Turbidity",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
@@ -433,8 +464,20 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       Text(
                                         "${turbidity}",
-                                        style: TextStyle(fontSize: 20),
+                                        style: TextStyle(fontSize: 17),
                                       ),
+                                      if (turbidity > 70)
+                                        Text("High",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: const Color.fromARGB(
+                                                    255, 183, 13, 1))),
+                                      // if (turbidity < )
+                                      //   Text("low",
+                                      //       style: TextStyle(
+                                      //           fontSize: 12,
+                                      //           color: const Color.fromARGB(
+                                      //               255, 183, 13, 1)))
                                     ],
                                   ),
                                 ),
@@ -446,10 +489,10 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: kDefaultPadding),
                         height: 100,
-                        width: 150,
+                        width: 120,
                         child: Image.asset(
                           'images/turb.png',
-                          fit: BoxFit.fitWidth,
+                          //fit: BoxFit.fitWidth,
                         ),
                       ),
                     ],
@@ -510,7 +553,10 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       Text(
                                         '${Water_level}',
-                                        style: TextStyle(fontSize: 17),
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            color: const Color.fromARGB(
+                                                255, 155, 12, 1)),
                                       ),
                                     ],
                                   ),
@@ -523,10 +569,10 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: kDefaultPadding),
                         height: 100,
-                        width: 150,
+                        width: 120,
                         child: Image.asset(
                           'images/liqued-level.png',
-                          fit: BoxFit.fitWidth,
+                          //fit: BoxFit.fitWidth,
                         ),
                       ),
                     ],
